@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("VARIABLES")]
     public float playerSpeed = 5f;
     public float maxVelocity = 5f;
     public float jumpSpeed = 5f;
@@ -11,25 +14,41 @@ public class PlayerMovement : MonoBehaviour
     public float maxJumpCharge = 3f;
     public float jumpChargeSpeed = 1f;
     public float jumpHorizontalSpeedM = 0.1f;
-    //private Rigidbody rb;
+
+    //[Header("IMAGE")]
+    //public Transform xMarkerImage;
+    //public Transform xMarkerStartPos;
+    //public float rotationImage;
+    //public float speedImage;
+
+    [Header("Slider Power Jump")]
+    public Slider powerBar;
+    public Camera mainCamera;
+
     private CharacterController controller;
     private CollisionFlags collisionFlags;
     private Vector3 movement;
     private float vSpeed;
-    private float jumpCharge = 0;
+    public float jumpCharge = 0f;
 
     float temp;
     bool isRotating;
     int horizontalDirection, verticalDirection;
 
-    void Start()
+    void Awake()
     {
-        //rb = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
+        //xMarkerStartPos = xMarkerImage;
+        //rotationImage = 0f;
+        //speedImage = 1.4f;
+        SetPower(0f);
     }
 
     private void Update()
     {
+
+        powerBar.transform.LookAt(powerBar.transform.position + mainCamera.transform.forward * Time.fixedDeltaTime);
+
         if (controller.isGrounded)
         {
             movement = Vector3.zero;
@@ -44,19 +63,57 @@ public class PlayerMovement : MonoBehaviour
             vSpeed = 0;
             if (Input.GetKey(KeyCode.Space))
             {
+
                 jumpCharge += jumpChargeSpeed * Time.deltaTime;
-            }
-            else if (Input.GetKeyUp(KeyCode.Space))
-            {
+
                 if (jumpCharge > maxJumpCharge)
                 {
                     jumpCharge = maxJumpCharge;
                 }
 
+                SetPower(jumpCharge);
+
+                //if (rotationImage == 0f)
+                //{
+                //    // x ++
+                //    print("x++");
+                //    xMarkerImage.transform.position += new Vector3(jumpCharge * jumpHorizontalSpeedM, 0f, 0f);
+                //} 
+                
+                //if (rotationImage == 90f)
+                //{
+                //    // z--
+                //    print(" z--");
+                //    xMarkerImage.transform.position -= new Vector3(0f, 0f, jumpCharge * jumpHorizontalSpeedM);
+                //} 
+                
+                //if (rotationImage == 180f)
+                //{
+                //    // x--
+                //    print("x--");
+                //    xMarkerImage.transform.position -= new Vector3(1f * jumpCharge * jumpHorizontalSpeedM, 0f, 0f);
+                //}
+                
+                //if (rotationImage == 270f)
+                //{
+                //    // z++
+                //    print("z++");
+                //    xMarkerImage.transform.position += new Vector3(0f, 0f, jumpCharge * jumpHorizontalSpeedM);
+                //}
+
+            }
+
+            if (Input.GetKeyUp(KeyCode.Space))
+            {
+
+                SetPower(0f);
+
                 movement += transform.right * jumpCharge * jumpHorizontalSpeedM;
 
                 vSpeed = jumpCharge;
-                jumpCharge = 0;
+                jumpCharge = 0f;
+
+                //xMarkerImage.transform.position = xMarkerStartPos.position;
             }
         }
 
@@ -67,41 +124,6 @@ public class PlayerMovement : MonoBehaviour
         collisionFlags = controller.Move(movement);
     }
 
-    //void FixedUpdate()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.W))
-    //    {
-    //        print("W");
-    //        //rb.AddForce(playerSpeed * new Vector3(0,0,1));
-    //        rb.velocity = playerSpeed * new Vector3(0, 0, 1);
-    //    }
-    //    else if (Input.GetKeyDown(KeyCode.S))
-    //    {
-    //        print("S");
-    //        //rb.AddForce(playerSpeed * new Vector3(0, 0, -1));
-    //        rb.velocity = playerSpeed * new Vector3(0, 0, -1);
-    //    }
-    //    else if (Input.GetKeyDown(KeyCode.A))
-    //    {
-    //        print("A");
-    //        //rb.AddForce(playerSpeed * new Vector3(-1, 0, 0));
-    //        rb.velocity = playerSpeed * new Vector3(-1, 0, 0);
-    //    }
-    //    else if (Input.GetKeyDown(KeyCode.D))
-    //    {
-    //        print("D");
-    //        //rb.AddForce(playerSpeed * new Vector3(1, 0, 0));
-    //        rb.velocity = playerSpeed * new Vector3(1, 0, 0);
-    //    }
-
-    //    if (Input.GetKeyUp(KeyCode.W))
-    //    {
-
-    //    }
-
-    //    rb.velocity = rb.velocity.normalized * maxVelocity;
-    //}
-
     private void RotateCharacter()
     {
         if (Input.GetKeyDown(KeyCode.E) && !isRotating)
@@ -110,6 +132,7 @@ public class PlayerMovement : MonoBehaviour
             horizontalDirection = 1;
             verticalDirection = 0;
             temp = 0;
+            //RotateRightImage();
         }
         if (Input.GetKeyDown(KeyCode.Q) && !isRotating)
         {
@@ -117,9 +140,15 @@ public class PlayerMovement : MonoBehaviour
             horizontalDirection = -1;
             verticalDirection = 0;
             temp = 0;
+            //RotateLeftImage();
         }
+
         transform.Rotate(Vector3.up * 90 * Time.fixedDeltaTime * horizontalDirection, Space.World);
         transform.Rotate(Vector3.right * 90 * Time.fixedDeltaTime * verticalDirection, Space.World);
+
+        //xMarkerImage.Rotate(Vector3.up * 90 * Time.fixedDeltaTime * horizontalDirection, Space.World);
+        //xMarkerImage.Rotate(Vector3.right * 90 * Time.fixedDeltaTime * verticalDirection, Space.World);
+
         temp += 90 * Time.fixedDeltaTime;
         if (temp >= 90)
         {
@@ -128,5 +157,25 @@ public class PlayerMovement : MonoBehaviour
             verticalDirection = 0;
             isRotating = false;
         }
+    }
+
+    //private void RotateLeftImage()
+    //{
+    //    rotationImage -= 90f;
+
+    //    if (rotationImage < 0) rotationImage = 270f;
+    //}
+
+    //private void RotateRightImage()
+    //{
+    //    rotationImage += 90f;
+
+    //    if (rotationImage > 270) rotationImage = 0f;
+
+    //}
+
+    public void SetPower(float health)
+    {
+        powerBar.value = health;
     }
 }
