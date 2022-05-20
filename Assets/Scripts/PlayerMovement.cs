@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -25,15 +26,17 @@ public class PlayerMovement : MonoBehaviour
     public Slider powerBar;
     public Camera mainCamera;
 
-    private CharacterController controller;
-    private CollisionFlags collisionFlags;
-    private Vector3 movement;
-    private float vSpeed;
-    public float jumpCharge = 0f;
+    [Header("References")]
 
-    float temp;
-    bool isRotating;
-    int horizontalDirection, verticalDirection;
+    private CharacterController controller;
+    [NonSerialized]public Vector3 movement;
+    private float vSpeed;
+    private float jumpCharge = 0f;
+    private Transform startPosition;
+
+    private float temp;
+    private bool isRotating;
+    private int horizontalDirection, verticalDirection;
 
     void Awake()
     {
@@ -42,6 +45,8 @@ public class PlayerMovement : MonoBehaviour
         //rotationImage = 0f;
         //speedImage = 1.4f;
         SetPower(0f);
+
+        startPosition = transform;
     }
 
     private void Update()
@@ -121,7 +126,7 @@ public class PlayerMovement : MonoBehaviour
         movement.y = vSpeed;
 
         //MOVEMENT
-        collisionFlags = controller.Move(movement);
+        controller.Move(movement);
     }
 
     private void RotateCharacter()
@@ -177,5 +182,18 @@ public class PlayerMovement : MonoBehaviour
     public void SetPower(float health)
     {
         powerBar.value = health;
+    }
+
+    public void PlayerDie()
+    {
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("killPlayer"))
+        {
+            PlayerDie();
+        }
     }
 }
