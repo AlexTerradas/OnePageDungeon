@@ -7,6 +7,9 @@ public class DoorManager : MonoBehaviour
     private static DoorManager m_instance;
 
     [SerializeField]
+    private GameManagerCSharp m_managerCSharp;
+
+    [SerializeField]
     private DoorTrigger m_frontTrigger;
 
     [SerializeField]
@@ -21,25 +24,12 @@ public class DoorManager : MonoBehaviour
     [SerializeField]
     private Canvas m_bubbleCanvas;
 
-    private void Awake()
-    {
-        if (m_instance == null)
-        {
-            m_instance = this;
-            UnityEngine.Object.DontDestroyOnLoad(gameObject);
-        }
-        else if (m_instance != this)
-        {
-            Destroy(gameObject);
-        }
-    }
-
     // Start is called before the first frame update
     void Start()
     {
         m_animationName = "OpenDoor";
         m_animationPlayed = false;
-        m_bubbleCanvas.enabled = false;
+        m_bubbleCanvas.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -58,10 +48,10 @@ public class DoorManager : MonoBehaviour
 
         if(m_frontTrigger.GetPlayerInTrigger())
         {
-            m_bubbleCanvas.enabled = true;
+            m_bubbleCanvas.gameObject.SetActive(true);
         } else
         {
-            m_bubbleCanvas.enabled = false;
+            m_bubbleCanvas.gameObject.SetActive(false);
         }
     }
 }
