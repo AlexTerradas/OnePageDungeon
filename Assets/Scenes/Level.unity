@@ -2550,7 +2550,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1382199933}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.9, y: 1.8, z: -1.1}
+  m_LocalPosition: {x: 1.42, y: 1.8, z: -1.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1690762514}
@@ -3742,7 +3742,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce4dbe3e8943c6e41bb66c24d9c5b468, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_canvas: {fileID: 0}
+  m_canvas: {fileID: 1290056209}
 --- !u!65 &1933187961
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -12,8 +12,8 @@ public class GameCompleted : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            m_canvas.enabled = true;
-            Time.timeScale = 0.0f;
+            m_canvas.gameObject.SetActive(true);
+            other.gameObject.SetActive(false);
         }
     }
 }
