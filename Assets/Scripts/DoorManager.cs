@@ -4,16 +4,18 @@ using UnityEngine;
 
 public class DoorManager : MonoBehaviour
 {
-    private static DoorManager m_instance;
-
-    [SerializeField]
-    private GameManagerCSharp m_managerCSharp;
 
     [SerializeField]
     private DoorTrigger m_frontTrigger;
 
     [SerializeField]
     private DoorTrigger m_backTrigger;
+
+    [SerializeField]
+    private DoorTrigger m_frontTriggerUp;
+
+    [SerializeField]
+    private DoorTrigger m_backTriggerUp;
 
     [SerializeField]
     private Animation m_animation;
@@ -23,6 +25,8 @@ public class DoorManager : MonoBehaviour
 
     [SerializeField]
     private Canvas m_bubbleCanvas;
+    [SerializeField]
+    private Canvas m_bubbleCanvasUp;
 
     // Start is called before the first frame update
     void Start()
@@ -52,6 +56,15 @@ public class DoorManager : MonoBehaviour
         } else
         {
             m_bubbleCanvas.gameObject.SetActive(false);
+        }
+
+        if (m_frontTriggerUp.GetPlayerInTrigger())
+        {
+            m_bubbleCanvasUp.gameObject.SetActive(true);
+        }
+        else
+        {
+            m_bubbleCanvasUp.gameObject.SetActive(false);
         }
     }
 }
