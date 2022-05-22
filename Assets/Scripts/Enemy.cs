@@ -20,6 +20,11 @@ public class Enemy : MonoBehaviour
         currentState = State.IDLE;
     }
 
+    private void OnEnable()
+    {
+        currentState = State.IDLE;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
