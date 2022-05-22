@@ -57,7 +57,7 @@ public class Enemy : MonoBehaviour
 
     void AttackUpdate()
     {
-        if (player.transform.position.y > transform.position.y + 0.2 || player.transform.position.y < transform.position.y - 0.2)
+        if (player.transform.position.y > transform.position.y + 2 || player.transform.position.y < transform.position.y - 0.2)
         {
             ChangeState(State.IDLE);
         }
