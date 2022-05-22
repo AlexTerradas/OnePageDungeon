@@ -8,9 +8,6 @@ using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("VARIABLES")]
-    public float playerSpeed = 5f;
-    public float maxVelocity = 5f;
-    public float jumpSpeed = 5f;
     public float gravity = 7f;
     public float maxJumpCharge = 3f;
     public float jumpChargeSpeed = 1f;
@@ -27,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
     public Camera mainCamera;
 
     [Header("References")]
-
+    public GroundDetector groundDetector;
     private CharacterController controller;
     [NonSerialized]public Vector3 movement;
     private float vSpeed;
@@ -36,10 +33,11 @@ public class PlayerMovement : MonoBehaviour
 
     private float temp;
     private bool isRotating;
-    private bool isGrounded;
-    private float currentFallTimer;
-    private float fallTimer;
     private int horizontalDirection, verticalDirection;
+    public bool jumpPressed = false;
+    public bool jumpReleased = false;
+    private float currentStopGravityTime;
+    public float stopGravityTime = 0.1f;
 
     void Awake()
     {
@@ -50,27 +48,60 @@ public class PlayerMovement : MonoBehaviour
         SetPower(0f);
 
         startPosition = transform;
+
+        powerBar.maxValue = maxJumpCharge;
     }
 
     private void Update()
     {
-        currentFallTimer -= Time.deltaTime;
-        if (controller.isGrounded)
+        //GRAVITY
+        if (groundDetector.isGrounded)
         {
-            isGrounded = true;
-            vSpeed = 0.0f;
+            currentStopGravityTime -= Time.deltaTime;
+
+            if(stopGravityTime <= 0)
+            {
+                vSpeed = 0.0f;
+            }
+
+            if (Input.GetKey(KeyCode.Space) && !isRotating)
+                jumpPressed = true;
+            else
+                jumpPressed = false;
+
+            if (Input.GetKeyUp(KeyCode.Space) && !isRotating)
+            {
+                jumpReleased = true;
+            }                
+
+            if (Input.GetKeyDown(KeyCode.E) && !isRotating && !jumpPressed)
+            {
+                isRotating = true;
+                horizontalDirection = 1;
+                verticalDirection = 0;
+                temp = 0;
+                //RotateRightImage();
+            }
+            if (Input.GetKeyDown(KeyCode.Q) && !isRotating && !jumpPressed)
+            {
+                isRotating = true;
+                horizontalDirection = -1;
+                verticalDirection = 0;
+                temp = 0;
+                //RotateLeftImage();
+            }
         }
         else
         {
-            if (currentFallTimer <= 0)
-            {
-                isGrounded = false;
-                currentFallTimer = fallTimer;
-            }
+            currentStopGravityTime = stopGravityTime;
         }
-        powerBar.transform.LookAt(powerBar.transform.position + mainCamera.transform.forward * Time.deltaTime);
+    }
 
-        if (isGrounded)
+    private void FixedUpdate()
+    {
+        powerBar.transform.LookAt(powerBar.transform.position + mainCamera.transform.forward * Time.fixedDeltaTime);
+
+        if (groundDetector.isGrounded)
         {
             movement = Vector3.zero;
 
@@ -78,68 +109,30 @@ public class PlayerMovement : MonoBehaviour
             RotateCharacter();
         }
 
-        //GRAVITY
-        if (isGrounded)
+        if (jumpPressed)
         {
-            isGrounded = true;
-            vSpeed = 0.0f;
-            if (Input.GetKey(KeyCode.Space))
+            jumpCharge += jumpChargeSpeed * Time.fixedDeltaTime;
+
+            if (jumpCharge > maxJumpCharge)
             {
-
-                jumpCharge += jumpChargeSpeed * Time.deltaTime;
-
-                if (jumpCharge > maxJumpCharge)
-                {
-                    jumpCharge = maxJumpCharge;
-                }
-
-                SetPower(jumpCharge);
-
-                //if (rotationImage == 0f)
-                //{
-                //    // x ++
-                //    print("x++");
-                //    xMarkerImage.transform.position += new Vector3(jumpCharge * jumpHorizontalSpeedM, 0f, 0f);
-                //} 
-                
-                //if (rotationImage == 90f)
-                //{
-                //    // z--
-                //    print(" z--");
-                //    xMarkerImage.transform.position -= new Vector3(0f, 0f, jumpCharge * jumpHorizontalSpeedM);
-                //} 
-                
-                //if (rotationImage == 180f)
-                //{
-                //    // x--
-                //    print("x--");
-                //    xMarkerImage.transform.position -= new Vector3(1f * jumpCharge * jumpHorizontalSpeedM, 0f, 0f);
-                //}
-                
-                //if (rotationImage == 270f)
-                //{
-                //    // z++
-                //    print("z++");
-                //    xMarkerImage.transform.position += new Vector3(0f, 0f, jumpCharge * jumpHorizontalSpeedM);
-                //}
-
+                jumpCharge = maxJumpCharge;
             }
 
-            if (Input.GetKeyUp(KeyCode.Space))
-            {
-
-                SetPower(0f);
-
-                movement += transform.right * jumpCharge * jumpHorizontalSpeedM;
-
-                vSpeed = jumpCharge;
-                jumpCharge = 0f;
-
-                //xMarkerImage.transform.position = xMarkerStartPos.position;
-            }
+            SetPower(jumpCharge);
         }
 
-        vSpeed -= gravity * Time.deltaTime;
+        if (jumpReleased)
+        {
+            jumpReleased = false;
+            SetPower(0f);
+
+            movement += transform.right * jumpCharge * jumpHorizontalSpeedM;
+
+            vSpeed = jumpCharge;
+            jumpCharge = 0f;            
+        }
+
+        vSpeed -= gravity * Time.fixedDeltaTime;
         movement.y = vSpeed;
 
         //MOVEMENT
@@ -148,22 +141,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void RotateCharacter()
     {
-        if (Input.GetKeyDown(KeyCode.E) && !isRotating)
-        {
-            isRotating = true;
-            horizontalDirection = 1;
-            verticalDirection = 0;
-            temp = 0;
-            //RotateRightImage();
-        }
-        if (Input.GetKeyDown(KeyCode.Q) && !isRotating)
-        {
-            isRotating = true;
-            horizontalDirection = -1;
-            verticalDirection = 0;
-            temp = 0;
-            //RotateLeftImage();
-        }
 
         transform.Rotate(Vector3.up * 90 * Time.fixedDeltaTime * horizontalDirection, Space.World);
         transform.Rotate(Vector3.right * 90 * Time.fixedDeltaTime * verticalDirection, Space.World);
