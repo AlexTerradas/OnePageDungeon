@@ -36,6 +36,9 @@ public class PlayerMovement : MonoBehaviour
 
     private float temp;
     private bool isRotating;
+    private bool isGrounded;
+    private float currentFallTimer;
+    private float fallTimer;
     private int horizontalDirection, verticalDirection;
 
     void Awake()
@@ -51,10 +54,23 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-
-        powerBar.transform.LookAt(powerBar.transform.position + mainCamera.transform.forward * Time.fixedDeltaTime);
-
+        currentFallTimer -= Time.deltaTime;
         if (controller.isGrounded)
+        {
+            isGrounded = true;
+            vSpeed = 0.0f;
+        }
+        else
+        {
+            if (currentFallTimer <= 0)
+            {
+                isGrounded = false;
+                currentFallTimer = fallTimer;
+            }
+        }
+        powerBar.transform.LookAt(powerBar.transform.position + mainCamera.transform.forward * Time.deltaTime);
+
+        if (isGrounded)
         {
             movement = Vector3.zero;
 
@@ -63,9 +79,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //GRAVITY
-        if (controller.isGrounded)
+        if (isGrounded)
         {
-            vSpeed = 0;
+            isGrounded = true;
+            vSpeed = 0.0f;
             if (Input.GetKey(KeyCode.Space))
             {
 
