@@ -26,6 +26,12 @@ public class GroundDetector : MonoBehaviour
         {
             isGrounded = false;
         }
+
+        Debug.DrawRay(transform.position + new Vector3(offset, 0, 0), Vector3.down, Color.magenta);
+        Debug.DrawRay(transform.position + new Vector3(-offset, 0, 0), Vector3.down, Color.magenta);
+        Debug.DrawRay(transform.position + new Vector3(0, 0, offset), Vector3.down, Color.magenta);
+        Debug.DrawRay(transform.position + new Vector3(0, 0, -offset), Vector3.down, Color.magenta);
+
     }
 
     //private void OnTriggerEnter(Collider other)
