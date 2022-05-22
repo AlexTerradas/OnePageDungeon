@@ -5563,7 +5563,7 @@ MonoBehaviour:
   collisionLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  offset: 0.28
+  offset: 0.25
 --- !u!4 &1890912198
 Transform:
   m_ObjectHideFlags: 0
