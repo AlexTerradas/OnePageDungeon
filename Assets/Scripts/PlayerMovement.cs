@@ -40,6 +40,8 @@ public class PlayerMovement : MonoBehaviour
     private float currentStopGravityTime;
     public float stopGravityTime = 0.1f;
 
+    public GameManagerCSharp gameManager;
+
     void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -190,7 +192,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void PlayerDie()
     {
-        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+        gameManager.Restart();
     }
 
     private void OnTriggerEnter(Collider other)
