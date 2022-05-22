@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     public float maxJumpCharge = 3f;
     public float jumpChargeSpeed = 1f;
     public float jumpHorizontalSpeedM = 0.1f;
+    public float rotationSpeedXD = 3f;
 
     //[Header("IMAGE")]
     //public Transform xMarkerImage;
@@ -32,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
     private Transform startPosition;
 
     private float temp;
-    private bool isRotating;
+    public bool isRotating;
     private int horizontalDirection, verticalDirection;
     public bool jumpPressed = false;
     public bool jumpReleased = false;
@@ -94,6 +95,15 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             currentStopGravityTime = stopGravityTime;
+        }
+
+        if (isRotating)
+        {
+            Time.timeScale = rotationSpeedXD;
+        }
+        else
+        {
+            Time.timeScale = 1;
         }
     }
 

@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
     private GameObject player;
     private BoxCollider hurtBox;
     private NavMeshAgent agent;
+    public float speed = 3.5f;
     State currentState;
 
     private void Start()
@@ -56,6 +57,14 @@ public class Enemy : MonoBehaviour
             ChangeState(State.IDLE);
         }
 
+        if (player.GetComponent<PlayerMovement>().isRotating)
+        {
+            agent.speed = speed / player.GetComponent<PlayerMovement>().rotationSpeedXD;
+        }
+        else
+        {
+            agent.speed = speed;
+        }
         agent.SetDestination(player.transform.position);
     }
 
