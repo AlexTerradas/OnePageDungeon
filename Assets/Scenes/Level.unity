@@ -322,6 +322,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portaTop: 0
   portaBottom: 0
+  player: {fileID: 1382199933}
+  enemy1: {fileID: 1394616884}
+  enemy2: {fileID: 846543034}
 --- !u!4 &179042366
 Transform:
   m_ObjectHideFlags: 0
@@ -1901,6 +1904,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_playerInTrigger: 0
+--- !u!1 &846543034 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2390473712358528728, guid: d04f35b5487bfbc4098351e7bafd88af, type: 3}
+  m_PrefabInstance: {fileID: 2101553358}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &846543038 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7219686811034759424, guid: d04f35b5487bfbc4098351e7bafd88af, type: 3}
@@ -2380,7 +2388,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2390473712358528728, guid: d04f35b5487bfbc4098351e7bafd88af, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7219686811034759424, guid: d04f35b5487bfbc4098351e7bafd88af, type: 3}
       propertyPath: m_RootOrder
@@ -3590,6 +3598,12 @@ MonoBehaviour:
   jumpPressed: 0
   jumpReleased: 0
   stopGravityTime: 0.1
+  gameManager: {fileID: 179042365}
+--- !u!1 &1394616884 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2390473712358528728, guid: d04f35b5487bfbc4098351e7bafd88af, type: 3}
+  m_PrefabInstance: {fileID: 871084843}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1394616888 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7219686811034759424, guid: d04f35b5487bfbc4098351e7bafd88af, type: 3}
